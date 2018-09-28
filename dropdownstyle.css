@@ -1,0 +1,23 @@
+  /* Dropdown Button */
+.dropbtn {
+    background-color: #4CAF50;
+    color: white;
+    padding: 16px;
+    font-size: 16px;
+    border-style: solid;
+    border-width: 1px;
+    border-color: black;
+    cursor: pointer;
+    min-width: 100%
+}
+
+/* Dropdown button on hover & focus */
+.dropbtn:hover, .dropbtn:focus {
+    background-color: #3e8e41;
+}
+
+#dropdownmenu {
+    margin-top: 20%;
+    margin-left: 70%;
+}
+

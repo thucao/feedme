@@ -1,0 +1,24 @@
+# Status Report 3 #
+
+1. Accomplishments
+- Used Google API to sign in and authenticate
+- Used Google API to use address autofill and suggestions
+- Finalized posting form
+- Filter events by time, expired events are not posted
+- Added some security to user input in the server
+
+2. Challenges
+- Front-end work - Bootstrap/React
+- Styling the webpage
+- Mobile UI
+- Merging files
+- Encoding/Security
+- Twilio - getting it to send SMS at a certain time and not immediately
+
+
+3. Goals
+- Make webpage look nice and pretty - get front-end work done
+- Filter events by Most Recent, Expiration Time, etc.
+- Merge forms to index.html
+- Connect to real server instead of localhost
+        (google signin only works on specified servers)

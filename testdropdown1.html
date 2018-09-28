@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+	<script type="text/javascript">
+		$(document).ready(function(){
+			$("#event1 ul").hide();
+			$("#event2 ul").hide();
+			$("#button1").click(function() {
+				$("#event1 ul").slideToggle('fast');
+			});
+			$("#button2").click(function() {
+				$("#event2 ul").slideToggle('fast');
+			});
+		});
+	</script>
+	<link rel="stylesheet" href="dropdownstyle.css" />
+</head>
+
+<body>
+	<div id = "dropdownmenu">
+		<div id="event1" class = "event">
+			<button id = "button1" class="dropbtn">Career Services</button>
+			<ul>
+				<li>Event: </li>
+				<li>Food: </li>
+				<li>Food Rating: </li>
+				<li>Location: </li>
+				<li>Elapsed Time: </li>
+			</ul>
+		</div>
+		<div id="event2" class = "event">
+			<button id = "button2" class="dropbtn">Asian American Center</button>
+			<ul>
+				<li>Event: </li>
+				<li>Food: </li>
+				<li>Food Rating: </li>
+				<li>Location: </li>
+				<li>Elapsed Time: </li>
+			</ul>
+		</div>
+	</div>
+
+</body>
+</html>

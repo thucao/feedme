@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+    <meta charset="utf-8" />
+    <title>form test</title>
+    <link rel="stylesheet" href="form.css" />
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.11.4/jquery-ui.min.js"></script>
+    <script type = "text/javascript" src="http://maps.googleapis.com/maps/api/js?libraries=places"></script>
+    <script>
+    	
+      function initAutocomplete() {
+        // Create the autocomplete object, restricting the search to geographical
+        // location types.
+        autocomplete = new google.maps.places.Autocomplete(
+        (document.getElementById('autocomplete')),
+            {types: ['geocode']});
+
+        autocomplete.addListener('place_changed', fillInAddress);
+      }
+
+       var placeSearch, autocomplete;
+     
+      function fillInAddress() {
+        // Get the place details from the autocomplete object.
+       place = autocomplete.getPlace();
+       console.log(place);
+       console.log(place.geometry.location.lat());
+       console.log(place.geometry.location.lng());
+
+      }
+function getGeolcation() {
+  return geolocation;
+}
+
+      function geolocate() {
+        if (navigator.geolocation) {
+          navigator.geolocation.getCurrentPosition(function(position) {
+             geolocation = {
+              lat: position.coords.latitude,
+              lng: position.coords.longitude
+            };
+
+               initAutocomplete();
+            var circle = new google.maps.Circle({
+              center: geolocation,
+              radius: position.coords.accuracy
+            });
+          autocomplete.setBounds(circle.getBounds());
+          });
+        }
+      }
+
+
+        // Get the modal
+var modal = document.getElementById('myModal');
+
+// Get the button that opens the modal
+var btn = document.getElementById("myBtn");
+
+// Get the <span> element that closes the modal
+var span = document.getElementsByClassName("close")[0];
+
+
+
+// When the user clicks on <span> (x), close the modal
+$(".close").click(function() {
+    modal.style.display = "none";
+});
+
+// When the user clicks anywhere outside of the modal, close it
+ $(window).click(function(event) {
+    if (event.target == modal) {
+        modal.style.display = "none";
+
+    }
+});
+
+
+
+$(function() {
+    $(".button").click(function() {
+      // validate and process form here
+       $("#lat").val(place.geometry.location.lat());
+      console.log("validating");
+      $("#lng").val(place.geometry.location.lng());
+
+      var d = $("#test").val();
+
+      var b = d.split(/\D+/);
+      day = new Date(b[0], --b[1], b[2], b[3], b[4], b[5]||0, b[6]||0);
+      $("#beginning").val(day);
+    });
+  });
+
+
+function handleSend(){
+  var request = new XMLHttpRequest();
+  request.open("POST", "https://hidden-plains-61862.herokuapp.com/sendFood", true);
+  request.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+
+  params = "event="+$("#event").val() + "&food="+ $("#food").val() + "&lat=" + $("#lat").val() + "&lng=" +$("#lng").val() + "&beginning=" +$("#beginning").val() +  "&expiration=" + $("#expiration").val() +"&address=" + $("#autocomplete").val();
+
+var res = encodeURI(params);
+console.log("sending stuff");
+request.send(res);
+document.getElementById('myEvent').style.display='none'
+console.log(res);
+
+}
+
+    </script>
+
+</head>
+ 
+<body>
+
+<!-- Trigger/Open The Modal -->
+<button onclick="document.getElementById('myEvent').style.display='block'"
+class="w3-button">Post Event</button>
+<div id="myEvent" class="modal">
+
+  <!-- Modal content -->
+  <div class="modal-content">
+
+ <span onclick="document.getElementById('myEvent').style.display='none'">&times;</span>
+    <h1>Posting Form</h1>
+
+        <form action="javascript:handleSend()"  method="post" accept-charset="ISO-8859-1" id="eventPost" >
+             <p>Event Name: <br><input type="text"  id="event" name="event" required size="30" maxlength="20" align = "right" placeholder=" ex. Fake Club GIM"/><br>
+
+            Food: <br><input type="text" id="food" name="food" required size="30"    maxlength="20" placeholder="ex. Peperonni Pizza"/><br>
+
+            Contact (optional)<br> <input type="tel" id="contact"  name="contact"   maxlength="10"placeholder="857000000"/><br>
+
+            Address: <br> <input id="autocomplete"  required size="50"  maxlength="50" name= "autocomplete" placeholder="Enter your address" onFocus="geolocate()" type="text"></input><br>
+
+            Start Time  (mm/dd/yyyy, hh:mm  am/pm) <br><input id="test" type="datetime-local" name = "test" required size="30" min="datetime-local" max="2018-06-30T16:30"><br>
+
+            Expiration Time (minutes)  <select name="expiration" id="expiration">
+                        <option value=""></option>
+                        <option value="30">30</option>
+                        <option value="60">60</option>
+                        <option value="90">90</option>
+                        <option value="120">120</option>
+                      </select><br>
+
+            <input type="hidden" id="lat" name="lat" value= "" >
+            <input type="hidden" id="lng" name="lng" value="">
+            <input type="hidden" id="beginning" name= "beginning" value ="">
+
+            <input type="submit"  value="submit" name="submit" class="button"> <br>
+        </form>
+   </div>
+</div>
+</body>
+</html>

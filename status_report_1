@@ -1,0 +1,24 @@
+# Status Report 1 #
+
+1. Accomplishments
+        - Created buttons for posting and signup
+        - Generated google maps
+        - Created drop down menu for listings
+        - Created sign up and post forms
+        - Made forms in style of a popup menu
+
+2. Challenges
+        - Styling: aligning all elements in the right positions
+        - Merging files: putting everything into index.html file
+        - Creating a sever to store data with the correct JSON
+
+3. Goals
+        - Create server to save sign up info and posting info
+        - Connect forms to their respective buttons
+        - Create JSON format for getting data back
+        - Clean up style.css
+        * Will clean up/edit index.html landmark functions once we are able to get back data from the server we created *
+
+# Comments by Ming
+* Focus on posting info and forms, get the important stuff done first.
+* "* Will clean up/edit index.html landmark functions once we are able to get back data from the server we created *" => good plan

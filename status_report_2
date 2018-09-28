@@ -1,0 +1,14 @@
+# Status Report 2 #
+
+1. Accomplishments
+-Setted up heroku server to store data(POST and GET)
+-fixed bug in the form setup
+-created template for sending the form (post)/ still work in progress
+
+2. Challenges
+-Filtering data based on time of expiration
+-validating form data (ongoing issue) 
+
+3. Goals
+-Will perfect the server and edit code from landmark assignment
+-will link the forms with the server to make sure the information can be sent.

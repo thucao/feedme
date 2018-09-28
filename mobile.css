@@ -1,0 +1,352 @@
+html{
+	height: 98%;
+	font-family: Helvetica;
+}
+body {
+	height:100%;
+	overflow: hidden;
+	background-color: grey;
+}
+#map_canvas {
+	/*display: block;*/
+	/*float: right;*/
+	width: 105%;
+	height: 60%;
+  z-index:  1;
+
+	
+  /*margin-bottom: 25%;*/
+
+}
+
+p {
+	font-size: 20px;
+	/*color: white;*/
+}
+#post_btn {
+	position: absolute;
+	display: block;
+	float: right;
+	margin-left: 0%;
+	margin-right: 0%;
+	margin-top: 0%;
+	margin-bottom: 5%;
+  background: black;
+
+
+}
+
+#signin {
+	/*float: right;*/
+	display: block;
+	/*margin-right: 2%;*/
+	margin-top: 0%;
+	margin-bottom: 5%;
+	margin-left: 88%;
+	width: 10%;
+	height: 10%;
+	position: fixed;
+
+}
+
+#user {
+	position: fixed;
+	float: right;
+}
+#out {
+	display: block;
+	float: right;
+	font-size: 24px;
+	background-color: salmon;
+	margin-right: 2%;
+}
+#user {
+	display: block;
+	margin-left: 66%;
+	margin-top: 0%;
+	font-size: 30px;
+	width: 20%;
+	font-weight: bold;
+	background-color: white;
+	color: grey;
+	text-align: center;
+}
+#signout {
+	display: block;
+	float: right;
+	/*margin-left: 70%;*/
+	margin-right: 2%;
+	margin-top: 0%;
+	margin-bottom: 5%;
+
+	/*//line-height: 60px;*/
+	font-weight: bold;
+	padding: 0.8% 2%;
+	width: 10%;
+	height: 15%;
+	background: black;
+	text-align: center;
+	border: none;
+
+}
+
+#events {
+	display: block;
+	position: relative;
+	
+	overflow-y: auto;
+}
+
+
+/* The Modal (background) */
+.modal {
+    display: none; /* Hidden by default */
+    position: relative; /* Stay in place */
+    z-index: 2; /* Sit on top */
+    left: 0;
+    top: 0;
+    width: 100%; /* Full width */
+    height: 100%; /* Full height */
+    overflow: auto; /* Enable scroll if needed */
+    background-color: rgb(0,0,0); /* Fallback color */
+    background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
+    overflow-y: auto;
+    overflow-x: auto;
+}
+
+/* Modal Content/Box */
+.modal-content {
+    background-color: #fefefe;
+    margin: 15% auto; /* 15% from the top and centered */
+    padding: 20px;
+    border: 1px solid #888;
+    width: 80%; /* Could be more or less, depending on screen size */
+    overflow-y: auto;
+    position: relative;
+    overflow-y: auto;
+    overflow-x: auto;
+}
+
+/* The Close Button */
+.close {
+    color: #aaa;
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
+}
+
+.close:hover,
+.close:focus {
+    color: black;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+#wrapper,
+#page-content-wrapper {
+  height: 100%;
+  width: 100%;
+}
+.container-fluid,
+.row,
+.col-lg-12 {
+  height: 100%;
+  width: 100%;
+}
+}
+/* hamburger menu pseudo element */
+
+.box-shadow-menu {
+  position: relative;
+  padding-left: 1.25em;
+}
+.box-shadow-menu:before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 0.25em;
+  width: 1em;
+  height: 0.15em;
+  background: black;
+  box-shadow: 0 0.25em 0 0 black, 0 0.5em 0 0 black;
+}
+/* hamburger menu pseudo element gradient */
+
+.gradient-menu {
+  padding-left: 1.25em;
+  position: relative;
+}
+.gradient-menu:before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 0.21em;
+  bottom: 0.21em;
+  width: 1em;
+  /*background: linear-gradient(to bottom, black, black 20%, white 20%, white 40%, black 40%, black 60%, white 60%, white 80%, black 80%, black 100%);*/
+}
+/* http://www.jqueryscript.net/demo/Bootstrap-Sidebar-Extension-With-jQuery-CSS-CSS3/ */
+
+/*!
+ * Start Bootstrap - Simple Sidebar HTML Template (http://startbootstrap.com)
+ * Code licensed under the Apache License v2.0.
+ * For details, see http://www.apache.org/licenses/LICENSE-2.0.
+ */
+
+/* Toggle Styles */
+
+.nav-tabs>li {
+  float: none;
+}
+.nav-tabs {
+  border-bottom: 0;
+}
+.nav-tabs>li.active>a,
+.nav-tabs>li.active>a:focus,
+.nav-tabs>li.active>a:hover {
+  margin: 0;
+  border-radius: 0;
+}
+#wrapper {
+ /* padding-left: 0;
+  -webkit-transition: all 0.5s ease;
+  -moz-transition: all 0.5s ease;
+  -o-transition: all 0.5s ease;
+  transition: all 0.5s ease;*/
+}
+#wrapper.toggled {
+  /*padding-left: 250px;*/
+}
+#sidebar-wrapper {
+  z-index: 1000;
+
+  float:bottom;
+  left: 250px;
+  width: 100%;
+  height: 40%;
+  margin-left: -250px;
+  /*margin-top: 90%;*/
+  overflow-y: auto;
+  overflow-x: auto;
+  background: black;
+  color: black;
+  bottom: 0;
+  justify-content: center;
+
+  display: -webkit-flex; /* Safari */
+    -webkit-justify-content: center; /* Safari 6.1+ */
+    display: flex;
+    justify-content: center;
+ /* -webkit-transition: all 0.5s ease;
+  -moz-transition: all 0.5s ease;
+  -o-transition: all 0.5s ease;
+  transition: all 0.5s ease;*/
+
+  position: absolute;
+}
+#wrapper.toggled #sidebar-wrapper {
+  width: 250px;
+}
+#page-content-wrapper {
+  width: 100%;
+  position: absolute;
+  padding: 15px;
+}
+#wrapper.toggled #page-content-wrapper {
+  position: absolute;
+  /*margin-right: -250px;*/
+}
+/* Sidebar Styles */
+
+.sidebar-nav {
+  position: absolute;
+  color: black;
+  top: 0%;
+  width: 100%;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  /*margin-left: 25%;*/
+  justify-content: center;
+}
+.sidebar-nav li {
+  text-indent: 20px;
+  line-height: 40px;
+  justify-content: center;
+  font-size: 40px;
+}
+.sidebar-nav li a {
+  display: block;
+  text-decoration: none;
+  color: #999999;
+  text-decoration: none;
+  color: black;
+  background: rgba(255, 255, 255, 0.2);
+   justify-content: center;
+}
+.sidebar-nav li a:active,
+.sidebar-nav li a:focus {
+  text-decoration: none;
+  color: black;
+}
+.sidebar-nav > .sidebar-brand {
+  height: 40px;
+  font-size: 20px;
+  line-height: 50px;
+  justify-content: center;
+  color:black;
+}
+.sidebar-nav > .sidebar-brand a {
+  color: black;
+  justify-content: center;
+}
+.sidebar-nav > .sidebar-brand a:hover {
+  color: black;
+  background: none;
+  justify-content: center;
+}
+@media(min-width:0px) {
+  #wrapper {
+    /*padding-left: -5%;*/
+   /* margin-bottom: 1000%;
+    padding-bottom: 100%;*/
+  }
+  #wrapper.toggled {
+    padding-left: 0;
+  }
+  #sidebar-wrapper {
+    width: 100%;
+  }
+  #wrapper.toggled #sidebar-wrapper {
+    width: 0;
+  }
+  #page-content-wrapper {
+    padding: 0%;
+    position: absolute;
+  }
+  #wrapper.toggled #page-content-wrapper {
+    position: relative;
+    margin-right: 0;
+  }
+}
+
+
+
+
+
+
+

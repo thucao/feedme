@@ -1,0 +1,436 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+	<title>Test</title>
+	<meta name="viewport" content="width=device-width, initial-scale=0.5, user-scalable=0"> 
+	<meta charset="utf-8">
+	<!-- <script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?sensor=true"></script> -->
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+
+	<!-- For Google Login API
+	<script src="https://apis.google.com/js/platform.js" async defer></script> -->
+	<meta name="google-signin-client_id" content="212274986528-riqq6pe1kerhtlhvb5gtra06slf6f8ol.apps.googleusercontent.com">
+	<script src="googlesignin.js"></script>
+
+	<!-- For Google autofill addresses -->
+	<script type = "text/javascript" src="https://maps.googleapis.com/maps/api/js?libraries=places&key=AIzaSyAb0e13UeZU_DHod549MhngstWwNvh22HU"></script>
+	<script src="form.js"></script>
+
+
+	<link rel = "stylesheet" href = "mobile.css" type = "text/css"/>
+	<link rel = "stylesheet" href = "form.css" type = "text/css"/>
+
+
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+<link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet" />
+<div id="wrapper">
+	<script type="text/javascript">
+
+console.log(navigator.userAgent);
+		
+		var peopleIcon = "peopleicon.png";
+		var myIcon = "troll.png";
+		var eventIcon = "eventIcon.png";
+		var map;
+		var myLat = 0;
+		var myLong = 0;
+		var myLocation = new google.maps.LatLng(myLat, myLong);
+		var myOptions = {
+			zoom: 13,
+			center: myLocation,
+			mapTypeId: google.maps.MapTypeId.ROADMAP
+		};
+		var request = new XMLHttpRequest();
+		var infowindow = new google.maps.InfoWindow();
+		var peopleData;
+		var eventData;
+		var closestEventDist = 1;//Hopefuly every event will be within 1 mile radius
+		var closestEvent;
+		//Initialize map
+		function initMap() {
+			console.log(navigator.userAgent);
+			map = new google.maps.Map(document.getElementById("map_canvas"), myOptions);
+			getMyLocation();
+			manageRequest();
+		}
+		// function createButtons() {
+		// 	var signup = document.getElementById("signup_btn");
+		// 	signup.addEventListener('click', function() {
+		// 		alert("sign up button clicked");
+		// 		// TODO: attach sign up form
+		// 	});
+		// 	var post = document.getElementById("post_btn");
+		// 	post.addEventListener('click', function(){
+		// 		alert("post button clicked");
+		// 		// TODO: attach post form
+		// 	})
+                //
+		// }
+
+		function createDropDown() {
+			$("#event1 ul").hide();
+			$("#event2 ul").hide();
+			$("#button1").click(function() {
+				$("#event1 ul").slideToggle('fast');
+			});
+			$("#button2").click(function() {
+				$("#event2 ul").slideToggle('fast');
+			});
+		}
+
+		//Retrieves location
+		function getMyLocation() {
+			if (navigator.geolocation) {
+					navigator.geolocation.getCurrentPosition(function(position) {
+							myLat = position.coords.latitude;
+							myLong = position.coords.longitude;
+							initMe();
+							map.panTo(myLocation);
+							//createButtons();
+							createDropDown();
+						});
+				}
+				else {
+					alert("Geolocation is not supported by your web browser.  What a shame!");
+				}
+		}
+		//Make request and get data
+		function manageRequest() {
+			//Insert server address
+			request.open("GET", "https://hidden-plains-61862.herokuapp.com/events", true);
+			request.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+
+			request.onreadystatechange = function() {
+				if (request.readyState == 4 && request.status == 200) {
+					console.log("Inside");
+					data = request.responseText;
+					requestData = JSON.parse(data);
+					eventData = requestData["events"];
+					//console.log(requestData);
+					renderMap();
+				}
+				else if (request.readyState == 4 && request.status != 200) {
+					console.log("Inside not 200");
+					document.getElementById("location").innerHTML = "<p>Might be 404 or 500 error</p>";
+				}
+			}
+			console.log("1");
+			request.send();
+			console.log("2");
+		}
+		//Create map
+		function renderMap() {
+			initEvent();//Creates marker for landmark within 1 mile radius
+			initMe();//Make marker for each person
+			initSort();
+			map.panTo(myLocation);//pan to my location
+		}
+		//Create marker for landmarks
+	function initEvent() {
+			for(i = 0; i < eventData.length; i++) {
+				eventLoc = new google.maps.LatLng(eventData[i]["lat"],eventData[i]["lng"]);
+				distance = calcDistance(eventData[i]["lat"],eventData[i]["lng"]);
+				//var eventInfo = eventData[i]["properties"];
+				//var lol = eventData[i]["event"];
+				var direction = "https://www.google.com/maps/dir/Current+Location/";
+				direction = direction + eventData[i]["lat"] + "," + eventData[i]["lng"];
+				var d = new Date(eventData[i]["beginning"]);
+				var time = formatDate(d);
+				var txt = "Directions";
+				var eventInfo =
+						"<b>Event: </b>" +  eventData[i]["event"] + "<BR>" +
+						"<b>Address: </b>" + eventData[i]["address"] + "<BR>" + "<BR>" +
+						"<b>Start Time: </b>" + time + "<BR>" +
+						"<b>Event Duration: </b>" + eventData[i]["expiration"] + " minutes<BR>" + "<BR>" +
+						"<b>Food: </b>" + eventData[i]["food"] + "<BR>" +
+						"<p><b>" + txt.link(direction) + "</b></p>" +
+						'<form action="javascript:msg(\'' + i + '\',\'' + direction + '\')"><b>Phone Number:</b> <input type="text" id="phone" name="usrname" maxlength="10"><br><input type="submit" value="Send Info to Phone!"> </form>';
+				var eventName = eventData[i]["event"];
+				createMarker(eventLoc, eventIcon, eventInfo, eventName);
+				if (distance < closestEventDist) {//Get closest landmark
+					closestEventDist = distance;
+					closestEvent = eventData[i];
+				}
+			}
+		}
+
+		function formatDate(date) {
+			var hours = date.getHours();
+			var minutes = date.getMinutes();
+			var ampm = hours >= 12 ? 'PM' : 'AM';
+			hours = hours % 12;
+			hours = hours ? hours : 12; // the hour '0' should be '12'
+			minutes = minutes < 10 ? '0'+minutes : minutes;
+			var strTime = hours + ':' + minutes + ' ' + ampm;
+			return date.getMonth()+1 + "/" + date.getDate() + "/" + date.getFullYear() + "  " + strTime;
+		}
+function msg(i,direction){
+			var number = $("#phone").val();
+			/*var m = "<p>" +  eventData[i]["event"] + " located at " + eventData[i]["lat"] + ", " + eventData[i]["lng"] + "</p>"
+						+ "<p>" + "Food: " + eventData[i]["food"] + "</p>"
+						+ "<p>" + "Created at: " + eventData[i]["created_at"] + "</p>"
+						+ "<p>" + "Expiration: " + eventData[i]["expiration"] + "</p>";
+						console.log(m);*/
+			//console.log($("#phone").val());
+			//direction = makeShort(direction);
+			var request = new XMLHttpRequest();
+			request.open("POST", "https://hidden-plains-61862.herokuapp.com/sendSMS", true);
+			request.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+			var message = eventData[i]["event"] + " is located at " + eventData[i]["address"] + ".";
+			params = "message=" + message + "&number=" + number + "&direction=" + direction;
+			console.log(params);
+			var res = encodeURI(params);
+			console.log("sending stuff");
+			request.send(res);
+		}
+
+
+		function initPeople() {
+			for(i = 0; i < peopleData.length; i++) {
+				var peopleInfo;
+				peopleLocation = new google.maps.LatLng(peopleData[i]["lat"],peopleData[i]["lng"]);
+				if (peopleData[i]["login"] != username) { //Create marker for other people
+					distance = calcDistance(peopleData[i]["lat"],peopleData[i]["lng"]);
+					peopleInfo = peopleData[i]["login"] + " is " + distance + " miles away.";
+					createMarker(peopleLocation, peopleIcon, peopleInfo);
+				}
+				else {//Create marker for myself
+					myLocation = new google.maps.LatLng(myLat, myLong);
+					peopleInfo = username + "<p>Nearest Historical Landmark: "+ closestLandmark["properties"]["Location_Name"] + "</p> <p>Distance away: " + closestLandmarkDist + " miles </p>";
+					createMarker(myLocation, myIcon, peopleInfo);
+				}
+			}
+		}
+
+
+
+
+		//Create marker for myself
+		function initMe() {
+			myLocation = new google.maps.LatLng(myLat, myLong);
+			info = "You are here!";
+			var marker = new google.maps.Marker({
+				position: myLocation,
+				map: map,
+				icon: myIcon
+			});
+			google.maps.event.addListener(marker, 'click', function() {
+				infowindow.setContent(info);
+				infowindow.open(map, marker);
+			});
+					//peopleInfo = username + "<p>Nearest Food Event: "+ closestEvent["properties"]["Location_Name"] + "</p> <p>Distance away: " + closestEventDist + " miles </p>";
+					//createMarker(myLocation, myIcon, peopleInfo);
+		}
+		//Calculate distance using Haversine Formula
+		//https://stackoverflow.com/questions/14560999/using-the-haversine-formula-in-javascript
+		function calcDistance( lat, long) {
+			Number.prototype.toRad = function() {
+				return this * Math.PI / 180;
+			}
+			var lat2 = lat;
+			var lon2 = long;
+			var lat1 = myLat;
+			var lon1 = myLong;
+			var R = 3959; //6371km is approx 3959 miles
+			var x1 = lat2-lat1;
+			var dLat = x1.toRad();
+			var x2 = lon2-lon1;
+			var dLon = x2.toRad();
+			var a = Math.sin(dLat/2) * Math.sin(dLat/2) +
+			Math.cos(lat1.toRad()) * Math.cos(lat2.toRad()) *
+			Math.sin(dLon/2) * Math.sin(dLon/2);
+			var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+			var d = R * c;
+			return d;
+		}
+		//Create marker
+		function createMarker(loc, image, info, name) {
+			var marker = new google.maps.Marker({
+				position: loc,
+				map: map,
+				icon: image
+			});
+			google.maps.event.addListener(marker, 'click', function() {
+				infowindow.setContent(info);
+				infowindow.open(map, marker);
+			});
+
+			var nameID = name.replace(/[^A-Z0-9]+/ig, "_");
+
+			$("#events").prepend(
+				"<p id = '" + nameID + "'>" + name + "</p>");
+				$("#"+nameID).click(function(){
+					infowindow.setContent(info);
+					infowindow.open(map, marker);
+				});
+
+		}
+
+
+function initSort(){
+			var parentSelect = document.getElementById("product");
+			parentSelect.addEventListener("change", function(e) {
+  				var selectedId = parentSelect.options[parentSelect.selectedIndex].id;
+				sort(selectedId);
+			});
+		}
+		function sort(selectedId){
+			//console.log(selectedId);
+			eventData = mergeSort(eventData, selectedId);
+			eventData = eventData.reverse();
+			markers = [];
+			$("#events").html("");
+			initEvent();
+		}
+		function mergeSort(arr, selectedId){
+		   	var len = arr.length;
+		   	if(len <2) {
+				return arr;
+			}
+		   	var mid = Math.floor(len/2),
+		       	    left = arr.slice(0,mid),
+		       	    right =arr.slice(mid);
+		   //send left and right to the mergeSort to broke it down into pieces
+		   //then merge those
+		   	if (selectedId == "starttime"){
+				//console.log("in start");
+				return mergeTime(mergeSort(left, selectedId),mergeSort(right, selectedId));
+			} else if (selectedId == "closest") {
+				return mergeClosest(mergeSort(left, selectedId),mergeSort(right, selectedId));
+			}
+			else return;
+		}
+		function mergeTime(left, right){
+			var result = [],
+			lLen = left.length,
+			rLen = right.length,
+			l = 0,
+			r = 0;
+			while(l < lLen && r < rLen){
+				leftDate = new Date(left[l].beginning).getTime();
+				rightDate = new Date(right[r].beginning).getTime();
+				if(leftDate < rightDate){
+					result.push(left[l++]);
+				}
+				else{
+					result.push(right[r++]);
+				}
+			}
+			//remaining part needs to be addred to the result
+			return result.concat(left.slice(l)).concat(right.slice(r));
+		}
+		function mergeClosest(left, right){
+			var result = [],
+			lLen = left.length,
+			rLen = right.length,
+			l = 0,
+			r = 0;
+			while(l < lLen && r < rLen){
+				if(calcDistance(left[l].lat, left[l].lng) < calcDistance(right[r].lat, right[r].lng)){
+					result.push(left[l++]);
+				}
+				else{
+					result.push(right[r++]);
+				}
+			}
+			//remaining part needs to be addred to the result
+			return result.concat(left.slice(l)).concat(right.slice(r));
+		}
+	
+
+	</script>
+
+	<body onload = "initMap()">
+  <!-- Sidebar -->
+<div id="wrapper">
+  <!-- Sidebar -->
+  <div id="sidebar-wrapper">
+    <ul class="sidebar-nav" id="side_bar">
+      <li class="sidebar-brand" style="font-weight: bold; color: #999999;">
+        <h1>Current Events</h1>
+       <button id = "post_btn" onclick="document.getElementById('myEvent').style.display='block'"
+		class="w3-button"><h3>Post Event</h3></button><br>
+		<div id="myEvent" class="modal">
+
+		  <!-- Modal content -->
+		  <div class="modal-content">
+
+		 <span onclick="document.getElementById('myEvent').style.display='none'">&times;</span>
+		    <h1>Posting Form</h1>
+
+		        <form action="javascript:handleSend()"  method="post" accept-charset="ISO-8859-1" id="eventPost" >
+		             <p>Event Name: <br><input type="text"  id="event" name="event" required size="30" maxlength="20" align = "right" placeholder=" ex. Fake Club GIM"/><br>
+
+		            Food: <br><input type="text" id="food" name="food" required size="30"    maxlength="20" placeholder="ex. Peperonni Pizza"/><br>
+
+		            Contact (optional)<br> <input type="tel" id="contact"  name="contact" required size="30"  maxlength="10"placeholder="857000000"/><br>
+
+		            Address: <br> <input id="autocomplete"  required size="50"  maxlength="50" name= "autocomplete" placeholder="Enter your address" onFocus="geolocate()" type="text"></input><br>
+
+		            Start Time  (mm/dd/yyyy, hh:mm  am/pm) <br><input id="test" type="datetime-local" name = "test" required size="30" min="datetime-local" max="2018-06-30T16:30"><br>
+
+		            Expiration Time (minutes)  <select name="expiration" id="expiration">
+		                        <option value=""></option>
+		                        <option value="30">30</option>
+		                        <option value="60">60</option>
+		                        <option value="90">90</option>
+		                        <option value="120">120</option>
+		                      </select><br>
+
+		            <input type="hidden" id="lat" name="lat" value= "" >
+		            <input type="hidden" id="lng" name="lng" value="">
+		            <input type="hidden" id="beginning" name= "beginning" value ="">
+
+		            <input type="submit"  value="submit" name="submit" class="button"> <br>
+		        </form> </form></div></div><br>
+
+          <p id = "user"></p>
+          <div id = "sort">
+		<select name="product" id="product">
+			<option>Sort By</option>
+			<option id="starttime">Start Time</option>
+			<option id="closest">Closest Location</option>
+		</select>
+		<div id ="events"></div>
+		
+	</div>
+
+		 <!-- Trigger/Open The Modal -->
+		
+      </li>
+
+      <hr>
+    </ul>
+  </div>
+  <!-- /#sidebar-wrapper -->
+  <!-- Page Content -->
+  <div id="page-content-wrapper">
+    <div class="container-fluid">
+      <div class="row">
+        <div class="col-lg-12">
+          <h1>
+	    <!-- <a href="#menu-toggle" class="gradient-menu" id="menu-toggle"></a>
+
+          &nbsp;Map&nbsp; --><!-- a href="#menu-toggle" class="btn btn-default" >Toggle Sidebar</a -->
+          </h1>
+          <!-- you can use tables or divs for the overall layout -->
+          <div id="map_canvas"></div>
+
+	<div id = "userinfo" class = "usermenu" style = "display: none">
+	        <p id = "user"></p>
+	        <button id = 'signout' onclick='signOut()'>Sign Out</button>
+	</div>
+	<div id = 'signin' class="g-signin2" data-onsuccess="onSignIn"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- /#page-content-wrapper -->
+</div>
+<!-- /#wrapper -->
+
+</body>
+
+</html>
